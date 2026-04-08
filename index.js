@@ -3,17 +3,23 @@ const axios = require("axios");
 
 const app = express();
 
-app.get("/", (req,res)=>{
+// Página inicial
+app.get("/", (req, res) => {
   res.send("Proxy funcionando!");
 });
 
-app.get("/proxy", async (req,res)=>{
-  try{
-    const response = await axios.get("URL_DA_API_DA_PROVEDORA");
-    res.json(response.data);
-  }catch(e){
-    res.status(500).send("Erro no proxy");
+// Rota para descobrir o IP da VPS
+app.get("/ip", async (req, res) => {
+  try {
+    const response = await axios.get("https://api.ipify.org?format=json");
+    res.send(`IP da VPS: ${response.data.ip}`);
+  } catch (error) {
+    res.send("Erro ao pegar IP");
   }
 });
 
-app.listen(process.env.PORT || 3000);
+// iniciar servidor
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Servidor rodando na porta " + PORT);
+});
